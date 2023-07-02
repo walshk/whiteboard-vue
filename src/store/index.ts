@@ -10,7 +10,7 @@ export default new Vuex.Store({
 		},
 	},
 	getters: {
-		settings(state): Object {
+		settings(state): object {
 			return state.settings;
 		},
 	},

@@ -21,7 +21,7 @@ export class Drawing {
 	}
 
 	calculateDistanceFrom(x: number, y: number): number {
-		const distance: Function = (
+		const distance = (
 			x1: number,
 			x2: number,
 			y1: number,
@@ -35,7 +35,7 @@ export class Drawing {
 		};
 
 		// TODO: implement more efficient search method
-		let shortestDistance: number = 0;
+		let shortestDistance = 0;
 		for (let i = 0; i < this.points.length; i++) {
 			const point: Point = this.points[i];
 			const distanceToPoint: number = distance(x, point.x, y, point.y);
