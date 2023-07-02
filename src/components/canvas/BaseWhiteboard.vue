@@ -4,9 +4,19 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-	name: 'HelloWorld',
-	props: {
-		msg: String,
+	name: 'BaseWhiteboard',
+	data() {
+		return {
+			currentDrawing: undefined,
+		};
+	},
+	methods: {
+		beginDrawing(): void {
+			// TODO beginDrawing
+		},
+		stopDrawing(): void {
+			// TODO stopDrawing
+		},
 	},
 });
 </script>
