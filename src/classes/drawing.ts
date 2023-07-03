@@ -1,15 +1,20 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { Point } from './point';
 
+const MAX_ERASE_DISTANCE = 50;
+
 export class Drawing {
-	constructor(id: number, radius: number, color?: string) {
-		this.id = id;
+	constructor(canvasId: string, radius: number, color?: string) {
+		const drawingId = uuidv4();
+		this.id = `${canvasId}/${drawingId}`;
 
 		this.points = [] as Point[];
 		this.radius = radius;
 		this.color = color;
 	}
 
-	id: number;
+	id: string;
 	points: Point[];
 	radius: number;
 	color?: string;
@@ -18,6 +23,11 @@ export class Drawing {
 		for (let i = 0; i < this.points.length; i++) {
 			this.points[i].render(ctx, this.radius, this.color);
 		}
+	}
+
+	addPoint(ctx: CanvasRenderingContext2D, point: Point): void {
+		this.points.push(point);
+		point.render(ctx, this.radius, this.color);
 	}
 
 	calculateDistanceFrom(x: number, y: number): number {
@@ -35,7 +45,7 @@ export class Drawing {
 		};
 
 		// TODO: implement more efficient search method
-		let shortestDistance = 0;
+		let shortestDistance = 99999;
 		for (let i = 0; i < this.points.length; i++) {
 			const point: Point = this.points[i];
 			const distanceToPoint: number = distance(x, point.x, y, point.y);
