@@ -2,8 +2,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Point } from './point';
 
-const MAX_ERASE_DISTANCE = 50;
-
 export class Drawing {
 	constructor(canvasId: string, radius: number, color?: string) {
 		const drawingId = uuidv4();

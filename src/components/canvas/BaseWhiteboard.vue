@@ -3,6 +3,7 @@
 		<canvas
 			class="canvas"
 			ref="canvas"
+			:style="canvasStyles"
 			:width="canvasDimensions.width"
 			:height="canvasDimensions.height"
 			@mousedown="onMouseDown"
@@ -14,8 +15,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
+
 import { Canvas } from '../../classes/canvas';
 import { CanvasSettings } from '@/interfaces/canvasSettings';
+import { WhiteboardTool } from '@/enums/whiteboardTool';
+import { StyleValue } from 'vue/types/jsx';
 
 export default Vue.extend({
 	name: 'BaseWhiteboard',
@@ -25,11 +30,6 @@ export default Vue.extend({
 			canvasDimensions: {
 				width: 0,
 				height: 0,
-			},
-			mouseButtons: {
-				LEFT: 0,
-				MIDDLE: 1,
-				RIGHT: 2,
 			},
 			isDrawing: false,
 			isErasing: false,
@@ -54,12 +54,11 @@ export default Vue.extend({
 	},
 	methods: {
 		onMouseDown(event: MouseEvent): void {
-			// TODO change to use currentTool as switch instead of button type
-			switch (event.button) {
-				case this.mouseButtons.LEFT:
+			switch (this.currentTool) {
+				case WhiteboardTool.Draw:
 					this.beginDrawing(event);
 					break;
-				case this.mouseButtons.MIDDLE:
+				case WhiteboardTool.Erase:
 					event.preventDefault();
 					this.beginErasing(event);
 					break;
@@ -74,15 +73,14 @@ export default Vue.extend({
 				this.beginErasing(event);
 			}
 		},
-		onMouseUp(event: MouseEvent): void {
-			// TODO change to use currentTool as switch instead of button type
-			switch (event.button) {
-				case this.mouseButtons.LEFT:
+		onMouseUp(): void {
+			switch (this.currentTool) {
+				case WhiteboardTool.Draw:
 					if (this.isDrawing) {
 						this.stopDrawing();
 					}
 					break;
-				case this.mouseButtons.MIDDLE:
+				case WhiteboardTool.Erase:
 					if (this.isErasing) {
 						this.stopErasing();
 					}
@@ -118,6 +116,10 @@ export default Vue.extend({
 		},
 	},
 	computed: {
+		...mapGetters({
+			currentTool: 'currentTool',
+			backdropColor: 'backdropColor',
+		}),
 		canvasContext(): CanvasRenderingContext2D {
 			const canvas = this.$refs.canvas as HTMLCanvasElement;
 			return canvas.getContext('2d', {
@@ -126,6 +128,11 @@ export default Vue.extend({
 		},
 		canvasSettings(): CanvasSettings {
 			return this.$store.getters.settings;
+		},
+		canvasStyles(): StyleValue {
+			return {
+				'--backdrop-color': this.backdropColor,
+			};
 		},
 	},
 });
@@ -140,7 +147,7 @@ export default Vue.extend({
 
 .canvas {
 	position: absolute;
-	background-color: lightblue;
+	background-color: var(--backdrop-color);
 	height: 100%;
 	width: 100%;
 	z-index: 0;

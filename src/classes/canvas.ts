@@ -5,6 +5,7 @@ import { Drawing } from './drawing';
 import { Point } from './point';
 import { NearestDrawingData } from '@/interfaces/nearestDrawingData';
 
+const MAX_ERASE_PROXIMITY = 10;
 export class Canvas {
 	constructor(ctx: CanvasRenderingContext2D, settings: CanvasSettings) {
 		this.canvasId = uuidv4(); // use as prefix for drawing IDs
@@ -63,7 +64,7 @@ export class Canvas {
 		if (this.drawings.length === 0) return;
 
 		const { nearestDrawing, nearestDistance } = this.findNearestDrawingTo(x, y);
-		if (nearestDistance > 10) return;
+		if (nearestDistance > MAX_ERASE_PROXIMITY) return;
 
 		const indexToRemove: number = this.drawings.findIndex(
 			(drawing: Drawing) => {
